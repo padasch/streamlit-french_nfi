@@ -80,6 +80,21 @@ plot_path = os.path.join(
     f"direct_bs-centered_{centered}_normalized-{normalized}-{group}.png"
 )
 
+# Overwrite if all groups are selected
+if group == "All Species":
+    if centered and normalized:
+        plot_path = "./figs/all/species/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps_centered_normalized.png"
+    elif centered and not normalized:
+        plot_path = "./figs/all/species/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps_centered.png"
+    elif not centered and normalized:
+        plot_path = "./figs/all/species/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps_normalized.png"
+    elif not centered and not normalized:
+        plot_path = "./figs/all/species/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps.png"
+    else:
+        st.error("Plot not found")
+elif subset_option == "All Tree Sizes":
+    st.write("Tree size data has not been added yet.")
+
 # Main part of the app
 st.title("Tree Mortality Analysis")
 
@@ -87,7 +102,8 @@ st.title("Tree Mortality Analysis")
 if os.path.exists(plot_path):
     st.image(plot_path, caption=f"{metric_option} for {group} in {map_type_option}", use_column_width=False)
 else:
-    st.error(f"Plot image not found: {plot_path}")
+    st.write(f"This data has not been added yet: {plot_path}")
+    # st.error(f"Plot image not found: {plot_path}")
 
 # Show the plot path for debugging purposes
 st.write(f"Plot path: {plot_path}")
