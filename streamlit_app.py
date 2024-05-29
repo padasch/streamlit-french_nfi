@@ -67,11 +67,19 @@ elif metric_option == "Change in Mortality since 2015 (relative to 2015)":
     normalized = True
 
 # Fourth selection: Map type
-map_type_option = st.sidebar.selectbox("Map type", ["Greater Ecoregion", "Hexmap"])
+map_type_option = st.sidebar.selectbox("Map type", ["Hexmap", "Greater Ecoregion", "Sylvoecoregion", "Administrative Region", "Administrative Departments"])
 if map_type_option == "Greater Ecoregion":
     map_type = "gre"
-else:
+elif map_type_option == "Sylvoecoregion":
+    map_type = "ser"
+elif map_type_option == "Administrative Region":
+    map_type = "reg"
+elif map_type_option == "Administrative Departments":
+    map_type = "dep"
+elif map_type_option == "Hexmap":
     map_type = "hex"
+else:
+    st.write("Invalid choice for map type")
 
 # Construct the path to the plot image
 plot_path = os.path.join(
@@ -100,7 +108,7 @@ st.title("Tree Mortality Analysis")
 
 # Check if the plot image exists
 if os.path.exists(plot_path):
-    st.image(plot_path, caption=f"{metric_option} for {group} in {map_type_option}", use_column_width=False)
+    st.image(plot_path, caption=f"{metric_option} for {group} in {map_type_option}", use_column_width=True)
 else:
     st.write(f"This data has not been added yet: {plot_path}")
     # st.error(f"Plot image not found: {plot_path}")
