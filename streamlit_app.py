@@ -101,6 +101,7 @@ with col2:
     elif st.session_state.page == "Dataset":
         st.warning("👈 Start exploring the data by clicking 'Visualizations' in the sidebar!")
         st.header("Dataset")
+        st.info(text="Loading the data...")
         st.write(pd.read_csv("data/nfi_data_for_webapp.csv"))
         with open("data/nfi_data_for_webapp.csv") as f:
             st.download_button('Download CSV', f, "french_nfi_data.csv")
