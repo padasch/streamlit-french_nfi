@@ -137,22 +137,17 @@ with col2:
    
     # Visualizations content -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     elif st.session_state.page == "Visualizations":
+        
+        # Options --------------------------------------------------------------------------------------------
         # First selection: Select Species or Tree Height
         subset_option = st.sidebar.selectbox(
             "Group",
-            ["[Select]", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"],
-            index=["[Select]", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"].index(
-                "[Select]"
+            ["All Trees", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"],
+            index=["All Trees", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"].index(
+                "All Trees"
             ),
         )
         
-        if subset_option == "[Select]":
-            st.warning("👈 Select a group in the sidebar to start exploring the data.")
-            st.info("💬 If you have any questions or feedback, please reach out to the authors via [GitHub](https://github.com/padasch/streamlit-french_nfi), [email](mailto:pascal.schneider@wsl.ch), or [X](https://x.com/padasch_).")
-            st.stop()
-        
-
-        # Options --------------------------------------------------------------------------------------------
         if subset_option == "Species":
             subset = "species_lat"
             subset_list = species_list
@@ -165,6 +160,9 @@ with col2:
         elif subset_option == "Administrative Region":
             subset = "reg"
             subset_list = region_list
+        else:
+            subset = "all"
+            subset_list = ["All Trees"]
 
         # Second selection: Subset
         group = st.sidebar.selectbox("Subset", subset_list)
@@ -194,7 +192,6 @@ with col2:
             centered = True
             normalized = True
 
-        # Species / Tree content -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         # Fourth selection: Map type
         map_type_option = st.sidebar.selectbox(
             "Map",
@@ -219,6 +216,34 @@ with col2:
             map_type = "hex"
         else:
             st.write("Invalid choice for map type")
+            
+        # Species / Tree content -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        midpath = "mean-std-band/facet"
+        
+        if subset_option == "All Trees":
+            st.warning("👈 Select a group in the sidebar to start exploring the data.")
+            st.header(f"General trends across 20 most common species")
+            
+            st.subheader("Trend per Region")
+            region_map = f"./figs/maps/{map_type}/direct_bs-centered_{centered}_normalized-{normalized}-All Species.png"
+            display_fig(region_map, f"Spatial distribution of {metric_option} for the 20 most common species", True)
+            
+            if map_type in ["reg", "gre"]:
+                region_facet = f"./figs/facet/{map_type}/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
+                display_fig(region_facet, f"Spatial distribution of {metric_option} for {map_type_option} for the 20 most common species", True)
+            
+            st.subheader("Trend per Tree Height Class")
+            fig_2 = f"./figs/facet/tree_height_class/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
+            display_fig(fig_2, f"{metric_option} Trends for the 20 most common species, separated by tree height class", True)
+            
+            st.subheader("Trend per Species")
+            fig_1 = f"./figs/facet/species_lat/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
+            display_fig(fig_1, f"{metric_option} Trends for the 20 most common species, separated by species", True)
+            
+            st.info("💬 If you have any questions or feedback, please reach out to the authors via [GitHub](https://github.com/padasch/streamlit-french_nfi), [email](mailto:pascal.schneider@wsl.ch), or [X](https://x.com/padasch_).")
+            st.stop()
+        
+
 
         # Species content -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         # Structure (for species, vice versa for height):
@@ -232,26 +257,38 @@ with col2:
         #   - Line facet per height
         
         # Get paths
-        midpath = "mean-std-band/facet"
-        
-        if "All" in group:
-            st.header(f"General trends across 20 most common species")
-            st.subheader("Trend per Species")
+        if subset == "species_lat" and group == "All Species":
+            st.warning("👈 Select a subset in the sidebar to start exploring the data.")
+            st.subheader(f"General trends per species")
             fig_1 = f"./figs/facet/species_lat/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
             display_fig(fig_1, f"{metric_option} Trends for the 20 most common species, separated by species", True)
+        
             
+        elif subset == "tree_height_class" and group == "All Tree Heights":
+            st.warning("👈 Select a subset in the sidebar to start exploring the data.")
             st.subheader("Trend per Tree Height Class")
             fig_2 = f"./figs/facet/tree_height_class/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
             display_fig(fig_2, f"{metric_option} Trends for the 20 most common species, separated by tree height class", True)
+        
+        elif (subset == "gre" or subset == "reg") and "All" in group:
+            st.warning("👈 Select a subset in the sidebar to start exploring the data.")
+            if subset == "gre":
+                st.subheader("Trend per greater ecorergion")
+            else:
+                st.subheader("Trend per administrative region")
             
-            st.subheader("Trend per Region")
-            region_map = f"./figs/maps/{map_type}/direct_bs-centered_{centered}_normalized-{normalized}-All Species.png"
+            region_map = f"./figs/maps/{subset}/direct_bs-centered_{centered}_normalized-{normalized}-All Species.png"
             display_fig(region_map, f"Spatial distribution of {metric_option} for the 20 most common species", True)
             
-            if map_type in ["reg", "gre"]:
-                region_facet = f"./figs/facet/{map_type}/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
-                display_fig(region_facet, f"Spatial distribution of {metric_option} for {map_type_option} for the 20 most common species", True)
-
+            region_facet = f"./figs/facet/{subset}/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
+            display_fig(region_facet, f"Spatial distribution of {metric_option} for {map_type_option} for the 20 most common species", True)
+            
+            # Add maps when greco or region is selected
+            if subset == "gre":
+                display_fig("./figs/maps/gre_map.png", "Greater Ecoregions in France", True)
+            elif subset == "reg":
+                display_fig("./figs/maps/reg_map.png", "Administrative Regions in France", True)
+        
         else:
             # Single plot
             plot_single = f"./figs/facet/{subset}/{midpath}/{group}-centered_{centered}-normalized-{normalized}.png"
