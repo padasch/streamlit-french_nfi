@@ -56,7 +56,7 @@ if st.sidebar.button("Dataset"):
 
 
 # Sidebar options
-col1, col2, col3 = st.columns([0.1, 0.8, 0.1])
+col1, col2, col3 = st.columns([0.01, 0.99, 0.01])
 with col2:
     # Title
     st.title("Tree Mortality Trends in France 🌲📊🇫🇷")
