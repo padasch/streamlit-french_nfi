@@ -137,14 +137,15 @@ with col2:
    
     # Visualizations content -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     elif st.session_state.page == "Visualizations":
+        st.sidebar.header("Options")
         
         # Options --------------------------------------------------------------------------------------------
         # First selection: Select Species or Tree Height
         subset_option = st.sidebar.selectbox(
             "Group",
-            ["All Trees", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"],
-            index=["All Trees", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"].index(
-                "All Trees"
+            ["All Groups", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"],
+            index=["All Groups", "Species", "Tree Height", "Greater Ecoregion", "Administrative Region"].index(
+                "All Groups"
             ),
         )
         
@@ -162,7 +163,7 @@ with col2:
             subset_list = region_list
         else:
             subset = "all"
-            subset_list = ["All Trees"]
+            subset_list = ["All Subsets"]
 
         # Second selection: Subset
         group = st.sidebar.selectbox("Subset", subset_list)
@@ -220,11 +221,19 @@ with col2:
         # Species / Tree content -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         midpath = "mean-std-band/facet"
         
-        if subset_option == "All Trees":
+        if subset_option == "All Groups":
             st.warning("👈 Select a group in the sidebar to start exploring the data.")
             st.header(f"General trends across 20 most common species")
             
+            st.subheader("Trend per Species")
+            fig_1 = f"./figs/facet/species_lat/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
+            display_fig(fig_1, f"{metric_option} Trends for the 20 most common species, separated by species", True)
+            
+            st.subheader("Trend per Tree Height Class")
+            fig_2 = f"./figs/facet/tree_height_class/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
+            display_fig(fig_2, f"{metric_option} Trends for the 20 most common species, separated by tree height class", True)
             st.subheader("Trend per Region")
+            st.write("Change the 'Map' option in the sidebar to see different maps.")
             region_map = f"./figs/maps/{map_type}/direct_bs-centered_{centered}_normalized-{normalized}-All Species.png"
             display_fig(region_map, f"Spatial distribution of {metric_option} for the 20 most common species", True)
             
@@ -232,13 +241,6 @@ with col2:
                 region_facet = f"./figs/facet/{map_type}/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
                 display_fig(region_facet, f"Spatial distribution of {metric_option} for {map_type_option} for the 20 most common species", True)
             
-            st.subheader("Trend per Tree Height Class")
-            fig_2 = f"./figs/facet/tree_height_class/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
-            display_fig(fig_2, f"{metric_option} Trends for the 20 most common species, separated by tree height class", True)
-            
-            st.subheader("Trend per Species")
-            fig_1 = f"./figs/facet/species_lat/{midpath}/fig-direct_bs-groups_of_most_observations-all_groups_100-bootstraps-centered_{centered}-normalized_{normalized}.png"
-            display_fig(fig_1, f"{metric_option} Trends for the 20 most common species, separated by species", True)
             
             st.info("💬 If you have any questions or feedback, please reach out to the authors via [GitHub](https://github.com/padasch/streamlit-french_nfi), [email](mailto:pascal.schneider@wsl.ch), or [X](https://x.com/padasch_).")
             st.stop()
