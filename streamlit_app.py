@@ -196,11 +196,11 @@ with col2:
         map_type_option = st.sidebar.selectbox(
             "Map",
             [
-                "Hexagon",
                 "Greater Ecoregion",
                 "Sylvoecoregion",
                 "Administrative Region",
                 "Administrative Departments",
+                "Hexagon",
             ],
         )
         
