@@ -56,7 +56,10 @@ if st.sidebar.button("Dataset"):
 
 
 # Sidebar options
-col1, col2, col3 = st.columns([0.01, 0.99, 0.01])
+st.sidebar.header("Options")
+initial_col_width = 0.5
+col_width = st.sidebar.slider('Adjust Display Width', min_value=0.0, max_value=0.999, value=initial_col_width, step=0.01)
+col1, col2, col3 = st.columns([0.01, col_width, 1.0 - col_width])
 with col2:
     # Title
     st.title("Tree Mortality Trends in France 🌲📊🇫🇷")
@@ -137,7 +140,6 @@ with col2:
    
     # Visualizations content -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     elif st.session_state.page == "Visualizations":
-        st.sidebar.header("Options")
         
         # Options --------------------------------------------------------------------------------------------
         # First selection: Select Species or Tree Height
